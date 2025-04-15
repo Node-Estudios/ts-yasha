@@ -9,7 +9,7 @@
 		"google-protobuf": "^3.21.2",
 		"js-common": "github:davidzeng0/js-common#dist",
 		"node-fetch": "^2.6.6",
-		"sange": "github:davidzeng0/sange",
+		"sange": "github:Node-Estudios/sange",
 		"sodium": "github:davidzeng0/sodium#dist"
 	},
 	"scripts": {
