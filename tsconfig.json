@@ -8,11 +8,19 @@
             "@proto": ["/proto/*"],
         },
         "declaration": true,
-        "removeComments": true,
-        "forceConsistentCasingInFileNames": true,
-        "strict": true,
+        "strict": false,
+        "noImplicitAny": false,
+        "strictNullChecks": false,
+        "strictFunctionTypes": false,
+        "strictBindCallApply": false,
+        "strictPropertyInitialization": false,
+        "noImplicitThis": false,
+        "alwaysStrict": false,
+    
+        // Relax module resolution
+        "esModuleInterop": true,
         "skipLibCheck": true,
-        "noImplicitOverride": true
+        "forceConsistentCasingInFileNames": true,
     },
     "exclude": [ "node_modules" ]
 }

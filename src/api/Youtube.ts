@@ -353,7 +353,7 @@ export class YoutubeAPI {
             body.context.client.clientName = 'ANDROID'
             body.context.client.clientVersion = '18.15.35'
             body.context.client.androidSdkVersion = 33
-            // @ts-expect-error
+            
             options.headers['User-Agent'] = 'com.google.android.youtube/18.15.35'
         }
 
@@ -361,9 +361,9 @@ export class YoutubeAPI {
             time = Math.floor(time / 1000)
             const hash = crypto.createHash('sha1').update(`${time} ${this.sapisid} https://${origin}.youtube.com`).digest('hex')
 
-            // @ts-expect-error
+            
             options.headers.authorization = 'SAPISIDHASH ' + time + '_' + hash
-            // @ts-expect-error
+            
             options.headers.cookie = this.cookie
         }
 
@@ -628,6 +628,7 @@ export class YoutubeAPI {
         // @ts-expect-error
         const expmatch = results.filter((t) => t.explicit === track.explicit)
 
+        
         // @ts-expect-error
         if (results.top_result && results.top_result.explicit === track.explicit) { expmatch.top_result = results.top_result }
         // @ts-expect-error
@@ -716,11 +717,11 @@ export class YoutubeMusicTrack extends YoutubeTrack {
         return { type, artists, duration }
     }
 
-    // @ts-expect-error
+    
     override from_search (track: { playlistItemData: { videoId: string }, flexColumns: Array<{ musicResponsiveListItemFlexColumnRenderer: { text?: { simpleText?: any, runs?: Array<{ text: any }> } } }>, badges: any }, hasType?: boolean) {
         if (!track.playlistItemData) { return }
         // TODO: check this
-        // @ts-expect-error
+        
         let { type, artists, duration } = this.parse_metadata(!!hasType, track.flexColumns[1].musicResponsiveListItemFlexColumnRenderer.text?.runs)
 
         if (hasType) {

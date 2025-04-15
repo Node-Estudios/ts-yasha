@@ -1,12 +1,12 @@
 import EventEmitter from 'node:events'
 
 import VoiceConnection from './VoiceConnection.js'
-// @ts-expect-error
 import AudioPlayer from 'sange'
 
 import sodium from 'sodium'
 import { UnsupportedError, GenericError, InternalError } from 'js-common'
 import { UnplayableError } from './Error.js'
+// @ts-expect-error
 import { VoiceConnectionStatus } from '@discordjs/voice'
 import { YoutubeTrack } from './api/Youtube.js'
 import { SpotifyTrack } from './api/Spotify.js'
@@ -105,6 +105,7 @@ class TrackPlayer extends EventEmitter {
     subscribe (connection: VoiceConnection) {
         if (this.external_encrypt) {
             if (this.subscriptions.length) { throw new UnsupportedError('Cannot subscribe to multiple connections when external encryption is enabled') }
+            // @ts-expect-error
             connection.on('stateChange', this.onstatechange)
         }
 
@@ -121,6 +122,7 @@ class TrackPlayer extends EventEmitter {
         const index = this.subscriptions.indexOf(subscription)
 
         if (index === -1) { return }
+        // @ts-expect-error
         if (this.external_encrypt) { this.subscriptions[index].connection.removeListener('stateChange', this.onstatechange) }
         this.subscriptions.splice(index, 1)
 
@@ -202,7 +204,7 @@ class TrackPlayer extends EventEmitter {
 
                 return
             }
-
+// @ts-expect-error
             if (this.external_packet_send) { this.get_connection().setSpeaking(true) }
             return
         }

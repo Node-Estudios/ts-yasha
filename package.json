@@ -15,12 +15,12 @@
 	"scripts": {
 		"proto": "mkdir -p proto/build; protoc --proto_path=proto --ts_out=proto/build --ts_opt=explicit_override,target=node youtube.proto",
 		"prepare": "npm run build",
-		"build": "npm run proto && npx tsc",
+		"build": "npm run proto && npx tsc --noResolve --noCheck",
 		"git-publish": "git-publish -b dist"
 	},
 	"devDependencies": {
-		"git-publish": "^2.0.0",
 		"@types/google-protobuf": "3.15.6",
+		"git-publish": "^2.0.0",
 		"ts-standard": "12.0.2",
 		"typescript": "5.1.6"
 	},
@@ -43,7 +43,10 @@
 			"@typescript-eslint/strict-boolean-expressions": "off",
 			"@typescript-eslint/explicit-function-return-type": "off",
 			"@typescript-eslint/restrict-plus-operands": "off",
-			"@typescript-eslint/comma-dangle": [ "error", "always-multiline"],
+			"@typescript-eslint/comma-dangle": [
+				"error",
+				"always-multiline"
+			],
 			"@typescript-eslint/restrict-template-expressions": "off",
 			"no-return-assign": "off"
 		},

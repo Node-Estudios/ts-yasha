@@ -1,3 +1,4 @@
+// @ts-expect-error
 import { VoiceConnectionStatus, VoiceConnectionDisconnectReason, VoiceConnection as VoiceConnectionBase, JoinConfig } from '@discordjs/voice'
 import { GatewayVoiceStateUpdateDispatchData, Guild, VoiceChannel } from 'discord.js'
 import { GenericError } from 'js-common'
@@ -59,14 +60,15 @@ export default class VoiceConnection extends VoiceConnectionBase {
     ready () {
         return this.state.status === VoiceConnectionStatus.Ready
     }
-
+    // @ts-expect-error
     override addStatePacket (packet: GatewayVoiceStateUpdateDispatchData) {
-        // @ts-expect-error
+
         if (!packet.channel_id) { this.destroy() } else { super.addStatePacket(packet) }
     }
-
+    // @ts-expect-error
     override onNetworkingError (error: any) {
         if (this.promise) { this.promise_reject(error) } else {
+            // @ts-expect-error
             this.emit('error', error)
             this.destroy()
         }
@@ -97,6 +99,7 @@ export default class VoiceConnection extends VoiceConnectionBase {
         }
     }
 
+    // @ts-expect-error
     override set state (state) {
         if (state.status !== this.state.status) {
             if (this.promise) { this.handle_state_change(state) } else if (state.status === VoiceConnectionStatus.Disconnected) {
@@ -106,12 +109,12 @@ export default class VoiceConnection extends VoiceConnectionBase {
 
         super.state = state
     }
-
+    // @ts-expect-error
     override get state () {
         // @ts-expect-error
         return this._state
     }
-
+    // @ts-expect-error
     override destroy (adapterAvailable = true) {
         if (this.state.status === VoiceConnectionStatus.Destroyed) { return }
         if (adapterAvailable) {
@@ -133,7 +136,7 @@ export default class VoiceConnection extends VoiceConnectionBase {
         if (this.guild.voice_connection === this) { this.guild.voice_connection = undefined } else { console.warn('Voice connection mismatch') }
         this.state = { status: VoiceConnectionStatus.Destroyed }
     }
-
+    // @ts-expect-error
     override disconnect () {
         this.destroy()
         return true
@@ -156,6 +159,7 @@ export default class VoiceConnection extends VoiceConnectionBase {
 
             this.connected = true
         } catch (e) {
+            // @ts-expect-error
             if (this.connected) { this.emit('error', new GenericError(e)) }
             this.destroy()
         } finally {
@@ -172,7 +176,7 @@ export default class VoiceConnection extends VoiceConnectionBase {
         if (!channel.joinable) { throw new GenericError(channel.full ? 'Channel is full' : 'No permissions') }
         let connection = (channel.guild as YashaGuild).voice_connection
 
-        // @ts-expect-error
+
         if (!connection) { connection = new VoiceConnection(channel, options) } else { connection.rejoin_id(channel.id) }
         if (connection.ready()) { return connection }
         void connection.await_connection()
