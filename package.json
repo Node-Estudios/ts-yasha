@@ -10,7 +10,7 @@
 		"js-common": "github:davidzeng0/js-common#dist",
 		"node-fetch": "^2.6.6",
 		"sange": "github:Node-Estudios/sange",
-		"sodium": "github:davidzeng0/sodium#dist"
+		"sodium": "github:Node-Estudios/sodium"
 	},
 	"scripts": {
 		"proto": "mkdir -p proto/build; protoc --proto_path=proto --ts_out=proto/build --ts_opt=explicit_override,target=node youtube.proto",
