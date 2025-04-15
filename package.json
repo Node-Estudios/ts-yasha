@@ -7,7 +7,7 @@
 		"@discordjs/voice": "github:davidzeng0/voice#dist",
 		"discord.js": "14.12.1",
 		"google-protobuf": "^3.21.2",
-		"js-common": "github:davidzeng0/js-common#dist",
+		"js-common": "github:Node-Estudios/js-common",
 		"node-fetch": "^2.6.6",
 		"sange": "github:Node-Estudios/sange",
 		"sodium": "github:Node-Estudios/sodium"
