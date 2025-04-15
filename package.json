@@ -15,7 +15,7 @@
 	"scripts": {
 		"proto": "mkdir -p proto/build; protoc --proto_path=proto --ts_out=proto/build --ts_opt=explicit_override,target=node youtube.proto",
 		"prepare": "npm run build",
-		"build": "npm run proto && npx tsc --noResolve --noCheck",
+		"build": "npm run proto && npx tsc",
 		"git-publish": "git-publish -b dist"
 	},
 	"devDependencies": {
