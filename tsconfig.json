@@ -10,7 +10,7 @@
         "declaration": true,
         "strict": false,
         "noImplicitAny": false,
-        "strictNullChecks": false,
+        "strictNullChecks": true,
         "strictFunctionTypes": false,
         "strictBindCallApply": false,
         "strictPropertyInitialization": false,
@@ -21,6 +21,7 @@
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
+        
     },
     "exclude": [ "node_modules" ]
 }

@@ -20,6 +20,8 @@
 	},
 	"devDependencies": {
 		"@types/google-protobuf": "3.15.6",
+		"@types/node": "^22.14.1",
+		"@types/node-fetch": "^2.6.12",
 		"git-publish": "^2.0.0",
 		"ts-standard": "12.0.2",
 		"typescript": "5.1.6"

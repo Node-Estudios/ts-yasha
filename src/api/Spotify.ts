@@ -162,7 +162,7 @@ export class SpotifyAPI {
     }
 
     check_valid_id (id: string) {
-        if (!/^[\w]+$/.test(id)) { throw new NotFoundError() }
+        if (!/^[\w]+$/.test(id)) { throw new NotFoundError('Invalid Spotify ID format') } // Added message
     }
 
     async get (id: string) {
@@ -241,17 +241,39 @@ export class SpotifyAPI {
         return await this.list_once('albums', id, start, length)
     }
 
-    async list (type: string, id: string, limit: number) {
-        let list = null
+    // Inside SpotifyAPI class in src/api/Spotify.ts
+
+    async list (type: string, id: string, limit: number): Promise<SpotifyPlaylist | null> {
+        let list: SpotifyPlaylist | null = null
         let offset = 0
+        let keepGoing = true
 
         do {
-            const result = await this.list_once(type, id, offset)
+            const result: SpotifyPlaylist | null = await this.list_once(type, id, offset)
 
-            if (!list) { list = result } else { list = list.concat(result) }
-            offset = result.start ?? 0
-        // eslint-disable-next-line no-unmodified-loop-condition
-        } while (offset !== undefined && (!limit || list.length < limit))
+            if (!result) {
+                keepGoing = false
+                break
+            }
+
+            if (!list) {
+                list = result
+            } else {
+                if (result.length > 0) {
+                    list.push(...result)
+                }
+                // Update the start property on the main list object from the latest result
+                list.start = result.start
+            }
+
+            // Update offset for the next iteration based on the result's continuation property
+            offset = result.start ?? 0 // Use offset from the result for next fetch
+            // Determine if we should continue based on whether the result had a next offset
+            keepGoing = result.start !== undefined
+
+            // Fix: Add eslint-disable comment right before the while line
+            // eslint-disable-next-line no-unmodified-loop-condition
+        } while (keepGoing && offset !== undefined && (!limit || (list && list.length < limit)))
 
         return list
     }

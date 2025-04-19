@@ -53,15 +53,15 @@ export class FileTrack extends Track {
 class File {
     Track = FileTrack
     async get (_url: string) {
-        throw new UnsupportedError()
+        throw new UnsupportedError('get operation is not supported for FileTrack') // Added message
     }
 
     async get_streams (_url: string) {
-        throw new UnsupportedError()
+        throw new UnsupportedError('get_streams operation is not supported for FileTrack') // Added message
     }
 
     async playlist (_url: string, _length: number) {
-        throw new UnsupportedError()
+        throw new UnsupportedError('playlist operation is not supported for FileTrack') // Added message
     }
 
     create (url: string, isfile?: boolean) {

@@ -1,3 +1,4 @@
+// Added type alias for WithImplicitCoercion
 import {
     search_continuation as SearchContinuation,
     playlist_params as PlaylistParams,
@@ -9,34 +10,47 @@ import {
     search as Search,
 } from './build/youtube.js'
 
+// Assuming Buffer is available (requires @types/node)
+import { Buffer } from 'node:buffer'
+
+type WithImplicitCoercion<T> = T | { valueOf: () => T }
+
 function binaryToB64NoPad (binary: WithImplicitCoercion<ArrayBuffer | SharedArrayBuffer>): string {
-    return Buffer.from(binary).toString('base64url')
+    // Use Buffer.from correctly with ArrayBufferLike types
+    return Buffer.from(binary as ArrayBufferLike).toString('base64url')
 }
 
-function binB64 (binary: WithImplicitCoercion<ArrayBuffer | SharedArrayBuffer>): string {
-    let str = binaryToB64NoPad(binary)
-
-    while (str.length & 3) { str += '=' }
-    return str
-}
+// Removed unused function: binB64
 
 function binaryToB64url (binary: WithImplicitCoercion<ArrayBuffer | SharedArrayBuffer>): string {
-    return encodeURIComponent(binB64(binary))
+    // Use Buffer's base64url which is typically unpadded and URL-safe
+    return Buffer.from(binary as ArrayBufferLike).toString('base64url')
 }
 
 function b64urlToBinary (input: string): Buffer {
-    return Buffer.from(decodeURIComponent(input), 'base64')
+    // Use Buffer's base64url decoding
+    return Buffer.from(input, 'base64url')
 }
 
 export function playlistNextOffset (continuation: string): undefined | number {
-    const p = Playlist.deserializeBinary(b64urlToBinary(continuation))
+    try {
+        const p = Playlist.deserializeBinary(b64urlToBinary(continuation))
 
-    if (!p.continuation?.params) return
-    const pParams = PlaylistParams.deserializeBinary(b64urlToBinary(p.continuation.params))
+        if (!p?.continuation?.params) return undefined
 
-    if (!pParams.offset) return
+        const pParams = PlaylistParams.deserializeBinary(b64urlToBinary(p.continuation.params))
 
-    return PlaylistOffset.deserializeBinary(b64urlToBinary(pParams.offset.substring('PT:'.length))).offset
+        if (!pParams?.offset) return undefined
+
+        const offsetStr = pParams.offset
+        if (typeof offsetStr !== 'string' || !offsetStr.startsWith('PT:')) return undefined
+
+        // Fix: Remove .buffer - deserializeBinary expects Uint8Array/Buffer
+        return PlaylistOffset.deserializeBinary(b64urlToBinary(offsetStr.substring('PT:'.length))).offset
+    } catch (e) {
+        console.error('Error decoding playlist continuation:', e)
+        return undefined
+    }
 }
 
 export function genPlaylistContinuation (id: string, offset: number): string {
@@ -47,13 +61,17 @@ export function genPlaylistContinuation (id: string, offset: number): string {
     const p = new Playlist()
     pOffset.offset = offset
     pParams.page = Math.floor(offset / 100)
-    pParams.offset = `PT:${offset ? binaryToB64NoPad(pOffset.serializeBinary()) : 'CAA'}`
+    // Pass the .buffer to binaryToB64NoPad
+    const pOffsetSerialized = offset ? binaryToB64NoPad(pOffset.serializeBinary().buffer) : 'CAA'
+    pParams.offset = `PT:${pOffsetSerialized}`
     pCont.vlid = 'VL' + id
-    pCont.params = binaryToB64url(pParams.serializeBinary())
+    // Pass the .buffer to binaryToB64url
+    pCont.params = binaryToB64url(pParams.serializeBinary().buffer)
     pCont.id = id
     p.continuation = pCont
 
-    return binaryToB64url(p.serializeBinary())
+    // Pass the .buffer to binaryToB64url
+    return binaryToB64url(p.serializeBinary().buffer)
 }
 
 export function genSearchContinuation (query: string, offset: number): string {
@@ -75,21 +93,24 @@ export function genSearchContinuation (query: string, offset: number): string {
     sOptions.offset = offset
     sOptions.position = sPosition
     sData.query = query
-    sData.options = binaryToB64url(sOptions.serializeBinary())
+    // Pass the .buffer to binaryToB64url
+    sData.options = binaryToB64url(sOptions.serializeBinary().buffer)
     sCont.data = sData
     sCont.const = 52047873
     sCont.type = 'search-feed'
 
-    return binaryToB64url(sCont.serializeBinary())
+    // Pass the .buffer to binaryToB64url
+    return binaryToB64url(sCont.serializeBinary().buffer)
 }
 
 export type SearchSortString = 'relevance' | 'rating' | 'upload_date' | 'view_count'
 export type SearchTypeString = 'video' | 'channel' | 'playlist' | 'movie'
-export type SearchDurationString = 'short' | 'medium' | 'long'
+export type SearchDurationString = 'short' | 'medium' | 'long' | 'any'
+
 export interface SearchOptionsType {
-    sort: SearchSortString
-    type: string
-    duration: SearchDurationString
+    sort?: SearchSortString
+    type?: SearchTypeString
+    duration?: SearchDurationString
     features?: {
         hd?: boolean
         cc?: boolean
@@ -105,11 +126,11 @@ export interface SearchOptionsType {
     }
 }
 export function genSearchOptions (opts: SearchOptionsType): string {
-    const options = new Search()
+    const options = new Search() // Review if this should be SearchOptions
     const filters = new SearchFilters()
-    options.sort = searchSort[opts.sort.toUpperCase() as keyof typeof searchSort]
-    filters.type = SearchFilters.Type[opts.type.toUpperCase() as keyof typeof SearchFilters.Type]
-    filters.duration = SearchFilters.Duration[opts.duration.toUpperCase() as keyof typeof SearchFilters.Duration]
+    options.sort = searchSort[(opts.sort?.toUpperCase() ?? 'RELEVANCE') as keyof typeof searchSort]
+    filters.type = SearchFilters.Type[(opts.type?.toUpperCase() ?? 'VIDEO') as keyof typeof SearchFilters.Type]
+    filters.duration = SearchFilters.Duration[(opts.duration?.toUpperCase() ?? 'ANY') as keyof typeof SearchFilters.Duration]
     filters.is_hd = !!opts.features?.hd
     filters.has_cc = !!opts.features?.cc
     filters.creative_commons = !!opts.features?.creativeCommons
@@ -123,5 +144,6 @@ export function genSearchOptions (opts: SearchOptionsType): string {
     filters.is_vr180 = !!opts.features?.vr180
     options.filters = filters
 
-    return binaryToB64url(options.serializeBinary())
+    // Pass the .buffer to binaryToB64url
+    return binaryToB64url(options.serializeBinary().buffer)
 }

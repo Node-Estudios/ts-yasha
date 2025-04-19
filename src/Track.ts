@@ -6,6 +6,7 @@ class TrackStream {
     duration?: number
     container: string | null
     codecs: string | null
+    volume?: number
 
     constructor (url: string) {
         this.url = url

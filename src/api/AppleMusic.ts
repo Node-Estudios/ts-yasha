@@ -144,7 +144,8 @@ export class AppleMusicAPI {
     async api_request (path: string, query: { [key: string]: any } = {}, options: { [key: string]: any } = {}) {
         let res; let body; const queries = []; let q = ''
 
-        for (const name in query) { queries.push(encodeURIComponent(name) + '=' + encodeURIComponent(query[name])) }
+        // Line 147
+        if (!res?.ok) { throw new InternalError(body ?? 'API request failed and returned no error body') }
         if (queries.length) { q = '?' + queries.join('&') } else { q = '' }
         if (!options.headers) { options.headers = {} }
         for (let tries = 0; tries < 2; tries++) {
@@ -171,7 +172,7 @@ export class AppleMusicAPI {
             throw new NetworkError(e)
         }
 
-        if (res?.status === 404) { throw new NotFoundError() }
+        if (res?.status === 404) { throw new NotFoundError('API resource not found') } // Added message
         if (!res?.ok) { throw new InternalError(body) }
         try {
             body = JSON.parse(body ?? '')
@@ -183,7 +184,7 @@ export class AppleMusicAPI {
     }
 
     check_valid_id (id: string) {
-        if (!/^[\d]+$/.test(id)) { throw new NotFoundError() }
+        if (!/^[\d]+$/.test(id)) { throw new NotFoundError('Invalid Apple Music ID format') } // Added message
     }
 
     async get (id: string) {
@@ -301,7 +302,7 @@ export class AppleMusicAPI {
 
     check_valid_playlist_id (id: string) {
         // eslint-disable-next-line no-useless-escape
-        if (!/^[\w\.-]+$/.test(id)) { throw new NotFoundError() }
+        if (!/^[\w\.-]+$/.test(id)) { throw new NotFoundError('Invalid Apple Music Playlist/Album ID format') } // Added message
     }
 
     async playlist_once (id: string, offset?: number, length?: number) {
@@ -313,16 +314,26 @@ export class AppleMusicAPI {
     }
 
     async list (type: string, id: string, limit: number) {
-        let list = null
+        let list: AppleMusicPlaylist | null = null
         let offset = 0
 
         do {
             const result = await this.list_once(type, id, offset)
 
-            if (!list) { list = result } else { list = list.concat(result) }
+            if (!list) {
+                list = result
+            } else {
+                // Use push with spread syntax to append items
+                list.push(...result)
+                // Only update continuation if result.start is a valid number
+                if (result.start !== undefined) {
+                    list.set_continuation(result.start)
+                }
+            }
+            // Use ?? 0 to ensure offset is always a number (or becomes 0 if undefined)
             offset = result.start ?? 0
-        // eslint-disable-next-line no-unmodified-loop-condition
-        } while (offset !== undefined && (!limit || list.length < limit))
+            // eslint-disable-next-line no-unmodified-loop-condition
+        } while (offset !== undefined && offset > 0 && (!limit || (list && list.length < limit)))
 
         return list
     }
