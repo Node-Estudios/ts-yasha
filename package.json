@@ -5,7 +5,6 @@
 	"version": "3.1.0",
 	"dependencies": {
 		"@discordjs/voice": "github:Node-Estudios/voice",
-		"discord.js": "14.12.1",
 		"google-protobuf": "3.21.2",
 		"js-common": "github:Node-Estudios/js-common",
 		"node-fetch": "2.6.6",
@@ -18,7 +17,11 @@
 		"build": "npm run proto && npx tsc",
 		"git-publish": "git-publish -b dist"
 	},
+	"peerDependencies": {
+		"discord.js": "^14.12.1"
+	},
 	"devDependencies": {
+		"discord.js": "^14.12.1",
 		"@types/google-protobuf": "3.15.6",
 		"@types/node": "^22.14.1",
 		"@types/node-fetch": "^2.6.12",

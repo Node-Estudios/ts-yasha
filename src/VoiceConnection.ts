@@ -1,6 +1,5 @@
-// @ts-expect-error
 import { VoiceConnectionStatus, VoiceConnectionDisconnectReason, VoiceConnection as VoiceConnectionBase, JoinConfig } from '@discordjs/voice'
-import { GatewayVoiceStateUpdateDispatchData, Guild, VoiceChannel } from 'discord.js'
+import type { GatewayVoiceStateUpdateDispatchData, Guild, VoiceChannel } from 'discord.js'
 import { GenericError } from 'js-common'
 
 export type YashaGuild = Guild & { voice_connection?: VoiceConnection }
