@@ -6,7 +6,6 @@
 	"dependencies": {
 		"@discordjs/voice": "github:Node-Estudios/voice",
 		"google-protobuf": "3.21.2",
-		"node-fetch": "2.6.6",
 		"sange": "github:Node-Estudios/sange",
 		"sodium": "github:Node-Estudios/sodium"
 	},
@@ -23,7 +22,6 @@
 		"discord.js": "^14.12.1",
 		"@types/google-protobuf": "3.15.6",
 		"@types/node": "^22.14.1",
-		"@types/node-fetch": "^2.6.12",
 		"git-publish": "^2.0.0",
 		"ts-standard": "12.0.2",
 		"typescript": "5.1.6"

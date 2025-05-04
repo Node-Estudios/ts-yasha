@@ -5,9 +5,6 @@ import { UnplayableError , ParseError, NotFoundError, InternalError, NetworkErro
 import { Track, TrackImage, TrackResults, TrackPlaylist, TrackStream, TrackStreams } from '../Track.js'
 import { genPlaylistContinuation, genSearchOptions, playlistNextOffset } from '../../proto/youtube.js'
 
-// Assuming @types/node-fetch@2 is installed
-import { type RequestInit, Headers } from 'node-fetch' // Import Headers
-
 function getProperty (array: any[], prop: string): any | null { // Added explicit return type
     if (!Array.isArray(array)) { return null }
     for (const item of array) {

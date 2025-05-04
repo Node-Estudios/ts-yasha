@@ -1,13 +1,14 @@
 import { ParseError, InternalError, NetworkError } from './Error.js'
-import { Agent } from 'https'
-import nfetch, { RequestInfo, RequestInit } from 'node-fetch'
+import { Agent } from 'node:https'
 
 const httpsAgent = new Agent({ keepAlive: true })
 
-async function fetch (url: RequestInfo, opts: RequestInit = {}) {
+
+async function fetch(url: RequestInfo, opts: RequestInit = {}) {
+    // @ts-ignore
     opts.agent = httpsAgent
 
-    return await nfetch(url, opts)
+    return await globalThis.fetch(url, opts)
 }
 
 export default new class {
@@ -53,7 +54,7 @@ export default new class {
         let body
 
         try {
-            body = await res.buffer()
+            body = Buffer.from(await res.arrayBuffer())
         } catch (e) {
             if (!res.ok) { throw new InternalError(e) }
             throw new NetworkError(e)

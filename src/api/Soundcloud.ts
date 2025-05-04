@@ -1,6 +1,4 @@
 import Request from '../Request.js'
-// Import Response type from node-fetch
-import { type Response } from 'node-fetch'
 
 import { Track, TrackImage, TrackResults, TrackPlaylist, TrackStream, TrackStreams } from '../Track.js'
 import { UnplayableError, NotATrackError, ParseError, NotFoundError, InternalError, NetworkError } from '../Error.js'
