@@ -5,8 +5,7 @@ import AudioPlayer from 'sange'
 
 // Assuming 'sodium' is correctly typed or use `require` if types are missing
 import sodium from 'sodium'
-import { UnsupportedError, GenericError, InternalError } from 'js-common'
-import { UnplayableError } from './Error.js'
+import { UnplayableError, GenericError, InternalError, UnsupportedError } from './Error.js'
 // Removed incorrect/unused import for @discordjs/voice types
 import { YoutubeTrack } from './api/Youtube.js'
 import { SpotifyTrack } from './api/Spotify.js'

@@ -2,7 +2,7 @@ import Request from '../Request.js'
 import Youtube from './Youtube.js'
 
 import { Track, TrackImage, TrackResults, TrackPlaylist } from '../Track.js'
-import { InternalError, ParseError, NetworkError, NotFoundError } from 'js-common'
+import { ParseError, NotFoundError, InternalError, NetworkError } from '../Error.js'
 
 export class SpotifyTrack extends Track {
     declare platform: 'Spotify'

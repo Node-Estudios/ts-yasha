@@ -3,8 +3,7 @@ import Request from '../Request.js'
 import { type Response } from 'node-fetch'
 
 import { Track, TrackImage, TrackResults, TrackPlaylist, TrackStream, TrackStreams } from '../Track.js'
-import { UnplayableError, NotATrackError } from '../Error.js'
-import { InternalError, NetworkError, NotFoundError, ParseError } from 'js-common'
+import { UnplayableError, NotATrackError, ParseError, NotFoundError, InternalError, NetworkError } from '../Error.js'
 
 export class SoundcloudTrack extends Track {
     declare platform: 'Soundcloud'

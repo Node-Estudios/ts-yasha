@@ -2,7 +2,7 @@ import Request from '../Request.js'
 import Youtube from './Youtube.js'
 
 import { Track, TrackImage, TrackResults, TrackPlaylist } from '../Track.js'
-import { InternalError, NetworkError, NotFoundError, ParseError } from 'js-common'
+import { ParseError, NotFoundError, InternalError, NetworkError } from '../Error.js' 
 
 export class AppleMusicTrack extends Track {
     artists?: string[]

@@ -109,7 +109,7 @@ const {Source: {Spotify}, TrackResults} = require('yasha');
 Spotify.search(input: string): Promise<TrackResults>
 ```
 
-#### Errors (see [errors](https://github.com/davidzeng0/js-common/blob/main/src/error.ts))
+#### Errors
 
 ```js
 class GenericError extends Error{
@@ -124,11 +124,10 @@ class ParseError extends GenericError; // error parsing server response
 class NotFoundError extends GenericError; // track not found
 class UnplayableError extends GenericError; // track not playable
 class NotATrackError extends GenericError; // url does not lead to a track
-
-const {Source} = require('yasha');
 ```
 
 ```js
+const {Source} = require('yasha');
 try{
 	await Source.Youtube.get('dQw4w9WgXcQ'); // get by video id
 }catch(e){

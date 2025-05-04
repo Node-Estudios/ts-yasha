@@ -1,6 +1,6 @@
 import { VoiceConnectionStatus, VoiceConnectionDisconnectReason, VoiceConnection as VoiceConnectionBase, JoinConfig } from '@discordjs/voice'
 import type { GatewayVoiceStateUpdateDispatchData, Guild, VoiceChannel } from 'discord.js'
-import { GenericError } from 'js-common'
+import { GenericError } from './Error.js'
 
 export type YashaGuild = Guild & { voice_connection?: VoiceConnection }
 export default class VoiceConnection extends VoiceConnectionBase {

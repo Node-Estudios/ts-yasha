@@ -1,6 +1,5 @@
 import { Track, TrackStream, TrackStreams } from '../Track.js'
-import { UnplayableError } from '../Error.js'
-import { UnsupportedError } from 'js-common'
+import { UnplayableError, UnsupportedError } from '../Error.js'
 
 export class FileStream extends TrackStream {
     isFile: boolean = false

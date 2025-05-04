@@ -1,12 +1,8 @@
 import crypto from 'node:crypto'
 import Request from '../Request.js'
 
-// Assuming js-common.d.ts exists or js-common provides types
-import { NetworkError, ParseError, InternalError, NotFoundError } from 'js-common'
-// Assuming UnplayableError provides types or add declaration file
-import { UnplayableError } from '../Error.js'
+import { UnplayableError , ParseError, NotFoundError, InternalError, NetworkError } from '../Error.js'
 import { Track, TrackImage, TrackResults, TrackPlaylist, TrackStream, TrackStreams } from '../Track.js'
-// Assuming proto/youtube provides types or add declaration file
 import { genPlaylistContinuation, genSearchOptions, playlistNextOffset } from '../../proto/youtube.js'
 
 // Assuming @types/node-fetch@2 is installed
@@ -36,11 +32,9 @@ function checkPlayable (st: { status: string, reason?: string } | undefined): vo
         case 'ok':
             return
         case 'error':
-            // Ensure NotFoundError is handled (requires js-common types)
             if (reason === 'Video unavailable') { throw new NotFoundError('Video unavailable') } // Pass arg
             break
         case 'unplayable':
-            // Ensure UnplayableError is handled (requires Error types)
             throw new UnplayableError(reason ?? status) // Use nullish coalescing, pass arg
         case 'login_required':
             throw new UnplayableError('Video is age restricted') // Pass arg

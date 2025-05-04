@@ -1,5 +1,4 @@
-import { NetworkError, InternalError, ParseError } from 'js-common'
-
+import { ParseError, InternalError, NetworkError } from './Error.js'
 import { Agent } from 'https'
 import nfetch, { RequestInfo, RequestInit } from 'node-fetch'
 
