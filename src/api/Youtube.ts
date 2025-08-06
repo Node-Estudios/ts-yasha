@@ -1,7 +1,7 @@
 import crypto from 'node:crypto'
 import Request from '../Request.js'
 
-import { UnplayableError , ParseError, NotFoundError, InternalError, NetworkError } from '../Error.js'
+import { UnplayableError, ParseError, NotFoundError, InternalError, NetworkError } from '../Error.js'
 import { Track, TrackImage, TrackResults, TrackPlaylist, TrackStream, TrackStreams } from '../Track.js'
 import { genPlaylistContinuation, genSearchOptions, playlistNextOffset } from '../../proto/youtube.js'
 

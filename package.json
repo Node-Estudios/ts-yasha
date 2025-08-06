@@ -4,7 +4,6 @@
 	"name": "yasha",
 	"version": "3.1.0",
 	"dependencies": {
-		"@discordjs/voice": "github:Node-Estudios/voice",
 		"google-protobuf": "3.21.2",
 		"sange": "github:Node-Estudios/sange",
 		"sodium": "github:Node-Estudios/sodium"
@@ -19,9 +18,10 @@
 		"discord.js": "^14.12.1"
 	},
 	"devDependencies": {
-		"discord.js": "^14.12.1",
+		"@discordjs/voice": "^0.18.0",
 		"@types/google-protobuf": "3.15.6",
 		"@types/node": "^22.14.1",
+		"discord.js": "^14.12.1",
 		"git-publish": "^2.0.0",
 		"ts-standard": "12.0.2",
 		"typescript": "5.1.6"

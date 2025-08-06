@@ -1,5 +1,7 @@
+// src/VoiceConnection.ts (Corregido)
+
 import { VoiceConnectionStatus, VoiceConnectionDisconnectReason, VoiceConnection as VoiceConnectionBase, JoinConfig } from '@discordjs/voice'
-import type { GatewayVoiceStateUpdateDispatchData, Guild, VoiceChannel } from 'discord.js'
+import type { Guild, VoiceChannel } from 'discord.js' // Se elimina una importación no usada
 import { GenericError } from './Error.js'
 
 export type YashaGuild = Guild & { voice_connection?: VoiceConnection }
@@ -12,17 +14,20 @@ export default class VoiceConnection extends VoiceConnectionBase {
     promise_resolve: any
     static Status = VoiceConnectionStatus
 
-    constructor (channel: VoiceChannel, options: JoinConfig) {
+    constructor (channel: VoiceChannel, options: Partial<JoinConfig>) {
+        // --- CAMBIO AQUÍ ---
+        // Se establece un valor por defecto para 'group' para cumplir con el tipo JoinConfig.
         super({
-            ...options,
+            group: 'default', // Valor por defecto
+            ...options, // Si 'options' trae un 'group', lo sobreescribirá
             channelId: channel.id,
             guildId: channel.guild.id,
+            selfDeaf: options.selfDeaf ?? false,
+            selfMute: options.selfMute ?? false,
         }, { adapterCreator: channel.guild.voiceAdapterCreator })
 
         this.guild = channel.guild
         this.guild.voice_connection = this
-        // this.connect_timeout = null
-        // this.connected = false
 
         this.await_connection().catch(() => {})
         // @ts-expect-error
@@ -59,15 +64,9 @@ export default class VoiceConnection extends VoiceConnectionBase {
     ready () {
         return this.state.status === VoiceConnectionStatus.Ready
     }
-    // @ts-expect-error
-    override addStatePacket (packet: GatewayVoiceStateUpdateDispatchData) {
 
-        if (!packet.channel_id) { this.destroy() } else { super.addStatePacket(packet) }
-    }
-    // @ts-expect-error
     override onNetworkingError (error: any) {
         if (this.promise) { this.promise_reject(error) } else {
-            // @ts-expect-error
             this.emit('error', error)
             this.destroy()
         }
@@ -77,15 +76,12 @@ export default class VoiceConnection extends VoiceConnectionBase {
         switch (state.status) {
             case VoiceConnectionStatus.Destroyed:
                 this.promise_reject(new GenericError('Connection destroyed'))
-
                 break
             case VoiceConnectionStatus.Disconnected:
                 this.promise_reject(new GenericError(VoiceConnection.disconnect_reason(state.reason)))
-
                 break
             case VoiceConnectionStatus.Ready:
                 this.promise_resolve()
-
                 this.state.networking.state.ws.sendPacket({
                     op: 15, /* MEDIA_SINK_WANTS */
                     d: {
@@ -93,49 +89,42 @@ export default class VoiceConnection extends VoiceConnectionBase {
                         any: this.joinConfig.receiveAudio === false ? 0 : 100,
                     },
                 })
-
                 break
         }
     }
 
-    // @ts-expect-error
     override set state (state) {
         if (state.status !== this.state.status) {
             if (this.promise) { this.handle_state_change(state) } else if (state.status === VoiceConnectionStatus.Disconnected) {
                 if (state.reason === VoiceConnectionDisconnectReason.WebSocketClose) { void this.await_connection() } else { this.destroy(state.reason !== VoiceConnectionDisconnectReason.AdapterUnavailable) }
             }
         }
-
         super.state = state
     }
-    // @ts-expect-error
+
     override get state () {
         // @ts-expect-error
         return this._state
     }
-    // @ts-expect-error
+
     override destroy (adapterAvailable = true) {
         if (this.state.status === VoiceConnectionStatus.Destroyed) { return }
         if (adapterAvailable) {
             // @ts-expect-error
             this._state.status = VoiceConnectionStatus.Destroyed
-
             /* remove the subscription */
             this.state = {
                 status: VoiceConnectionStatus.Destroyed,
                 adapter: this.state.adapter,
             }
-
             // @ts-expect-error
             this._state.status = VoiceConnectionStatus.Disconnected
-
             super.disconnect()
         }
-
         if (this.guild.voice_connection === this) { this.guild.voice_connection = undefined } else { console.warn('Voice connection mismatch') }
         this.state = { status: VoiceConnectionStatus.Destroyed }
     }
-    // @ts-expect-error
+
     override disconnect () {
         this.destroy()
         return true
@@ -155,15 +144,12 @@ export default class VoiceConnection extends VoiceConnectionBase {
 
         try {
             await this.promise
-
             this.connected = true
         } catch (e) {
-            // @ts-expect-error
             if (this.connected) { this.emit('error', new GenericError(e)) }
             this.destroy()
         } finally {
             clearTimeout(this.timeout)
-
             this.timeout = null
             this.promise = null
             this.promise_resolve = null
@@ -175,13 +161,10 @@ export default class VoiceConnection extends VoiceConnectionBase {
         if (!channel.joinable) { throw new GenericError(channel.full ? 'Channel is full' : 'No permissions') }
         let connection = (channel.guild as YashaGuild).voice_connection
 
-
         if (!connection) { connection = new VoiceConnection(channel, options) } else { connection.rejoin_id(channel.id) }
         if (connection.ready()) { return connection }
         void connection.await_connection()
-
         await connection.promise
-
         return connection
     }
 
@@ -192,13 +175,10 @@ export default class VoiceConnection extends VoiceConnectionBase {
     static disconnect (guild: YashaGuild, options: Partial<JoinConfig>) {
         if (guild.voice_connection) {
             guild.voice_connection.disconnect()
-
             return true
         }
-
         if (!guild.members.me?.voice.channel) { return false }
         const { rejoin, disconnect } = VoiceConnectionBase.prototype
-
         const dummy = {
             state: {
                 status: VoiceConnectionStatus.Ready,
@@ -208,17 +188,14 @@ export default class VoiceConnection extends VoiceConnectionBase {
                     destroy () {},
                 }),
             },
-
             joinConfig: {
                 guildId: guild.id,
                 channelId: guild.members.me.voice.channel.id,
                 ...options,
             },
         }
-
         if (!rejoin.call(dummy)) { throw new GenericError(this.disconnect_reason(VoiceConnectionDisconnectReason.AdapterUnavailable)) }
         dummy.state.status = VoiceConnectionStatus.Ready
-
         if (!disconnect.call(dummy)) { throw new GenericError(this.disconnect_reason(VoiceConnectionDisconnectReason.AdapterUnavailable)) }
         return true
     }
