@@ -1,7 +1,7 @@
 // src/VoiceConnection.ts (Corregido)
 
 import { VoiceConnectionStatus, VoiceConnectionDisconnectReason, VoiceConnection as VoiceConnectionBase, JoinConfig } from '@discordjs/voice'
-import type { Guild, VoiceChannel } from 'discord.js' // Se elimina una importación no usada
+import type { Guild, VoiceChannel } from 'discord.js'
 import { GenericError } from './Error.js'
 
 export type YashaGuild = Guild & { voice_connection?: VoiceConnection }
@@ -15,11 +15,9 @@ export default class VoiceConnection extends VoiceConnectionBase {
     static Status = VoiceConnectionStatus
 
     constructor (channel: VoiceChannel, options: Partial<JoinConfig>) {
-        // --- CAMBIO AQUÍ ---
-        // Se establece un valor por defecto para 'group' para cumplir con el tipo JoinConfig.
         super({
-            group: 'default', // Valor por defecto
-            ...options, // Si 'options' trae un 'group', lo sobreescribirá
+            group: 'default',
+            ...options,
             channelId: channel.id,
             guildId: channel.guild.id,
             selfDeaf: options.selfDeaf ?? false,
@@ -67,7 +65,9 @@ export default class VoiceConnection extends VoiceConnectionBase {
 
     override onNetworkingError (error: any) {
         if (this.promise) { this.promise_reject(error) } else {
-            this.emit('error', error)
+            // --- CAMBIO AQUÍ ---
+            // Se realiza una aserción de tipo a 'any' para evitar el error de TypeScript.
+            (this as any).emit('error', error)
             this.destroy()
         }
     }
@@ -146,7 +146,11 @@ export default class VoiceConnection extends VoiceConnectionBase {
             await this.promise
             this.connected = true
         } catch (e) {
-            if (this.connected) { this.emit('error', new GenericError(e)) }
+            if (this.connected) {
+                // --- CAMBIO AQUÍ ---
+                // Se realiza la misma aserción de tipo para la segunda llamada a 'emit'.
+                (this as any).emit('error', new GenericError(e))
+            }
             this.destroy()
         } finally {
             clearTimeout(this.timeout)

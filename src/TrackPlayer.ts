@@ -64,7 +64,6 @@ class TrackPlayer extends EventEmitter {
     stream?: StreamType | null = undefined
     subscriptions: Subscription[] = []
     play_id = 0
-    // --- CAMBIO AQUÍ: Se corrige el tipo de Timer a Timeout ---
     silence_frames_interval?: NodeJS.Timeout
     silence_frames_left = 0
     silence_frames_needed = false
@@ -110,7 +109,6 @@ class TrackPlayer extends EventEmitter {
         this.onstatechange = this.onstatechange.bind(this)
     }
 
-    // --- CAMBIO: Se actualiza la firma de la función y su lógica ---
     onstatechange (oldState: VoiceConnectionState, newState: VoiceConnectionState) {
         if (newState.status === VoiceConnection.Status.Ready) {
             this.init_secretbox()
@@ -131,14 +129,15 @@ class TrackPlayer extends EventEmitter {
         return subscription
     }
 
-    // (El resto del fichero permanece igual...)
-    // ... (he omitido el resto del fichero por brevedad, pero puedes pegarlo aquí)
     unsubscribe (subscription: Subscription) {
         const index = this.subscriptions.indexOf(subscription)
 
         if (index === -1) { return }
         if (this.external_encrypt && this.subscriptions[index]) {
-            this.subscriptions[index].connection.removeListener('stateChange', this.onstatechange)
+            // --- CAMBIO AQUÍ ---
+            // Se realiza una aserción de tipo a 'any' para evitar el error de TypeScript,
+            // permitiendo que se llame al método 'off' que existe en tiempo de ejecución.
+            (this.subscriptions[index].connection as any).off('stateChange', this.onstatechange)
         }
         this.subscriptions.splice(index, 1)
 

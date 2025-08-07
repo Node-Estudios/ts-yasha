@@ -1,6 +1,6 @@
 import { NotATrackError } from './Error.js'
 // Assuming these imports work now, otherwise revert to '../api.js' and remove Album types
-import YoutubeAPI, { type YoutubeTrack, YoutubePlaylist, YoutubeResults } from './api/Youtube'
+import YoutubeAPI, { YoutubeTrack, YoutubePlaylist, YoutubeResults } from './api/Youtube.js'
 import SoundcloudAPI, { type SoundcloudTrack, SoundcloudPlaylist } from './api/Soundcloud'
 import SpotifyAPI, { type SpotifyTrack, SpotifyPlaylist } from './api/Spotify'
 // import SpotifyAlbum from './api/Spotify'

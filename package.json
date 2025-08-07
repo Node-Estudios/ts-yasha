@@ -6,7 +6,8 @@
 	"dependencies": {
 		"google-protobuf": "3.21.2",
 		"sange": "github:Node-Estudios/sange",
-		"sodium": "github:Node-Estudios/sodium"
+		"sodium": "github:Node-Estudios/sodium",
+		"youtubei.js": "^15.0.1"
 	},
 	"scripts": {
 		"proto": "mkdir -p proto/build; protoc --proto_path=proto --ts_out=proto/build --ts_opt=explicit_override,target=node youtube.proto",
