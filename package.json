@@ -1,13 +1,28 @@
 {
 	"main": "index.js",
 	"types": "index.d.ts",
-	"name": "yasha",
-	"version": "3.1.0",
+	"name": "@eliyya/yasha",
+	"version": "3.2.0",
 	"dependencies": {
-		"google-protobuf": "3.21.2",
-		"sange": "github:Node-Estudios/sange",
-		"sodium": "github:Node-Estudios/sodium",
-		"youtubei.js": "^15.0.1"
+		"@eliyya/sange": "1.2.0",
+		"@eliyya/sodium": "1.1.0",
+		"google-protobuf": "3.21.4",
+		"youtubei.js": "15.0.1"
+	},
+	"author": "David Zeng (https://github.com/davidzeng0)",
+	"contributors": [
+		"Eli Maciel (https://github.com/eliyya)",
+		"Rodrigo Ortiz (https://github.com/rodrago3490)",
+		"David Zeng (https://github.com/davidzeng0)"
+	],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Node-Estudios/ts-yasha.git"
+	},
+	"homepage": "https://github.com/Node-Estudios/ts-yasha#readme",
+	"bugs": {
+		"url": "https://github.com/Node-Estudios/ts-yasha/issues"
 	},
 	"scripts": {
 		"proto": "mkdir -p proto/build; protoc --proto_path=proto --ts_out=proto/build --ts_opt=explicit_override,target=node youtube.proto",
@@ -16,16 +31,16 @@
 		"git-publish": "git-publish -b dist"
 	},
 	"peerDependencies": {
-		"discord.js": "^14.12.1"
+		"discord.js": "^14.21.0"
 	},
 	"devDependencies": {
-		"@discordjs/voice": "^0.18.0",
-		"@types/google-protobuf": "3.15.6",
-		"@types/node": "^22.14.1",
-		"discord.js": "^14.12.1",
-		"git-publish": "^2.0.0",
+		"@discordjs/voice": "0.18.0",
+		"@types/google-protobuf": "3.15.12",
+		"@types/node": "24.2.0",
+		"discord.js": "14.21.0",
+		"git-publish": "2.2.0",
 		"ts-standard": "12.0.2",
-		"typescript": "5.1.6"
+		"typescript": "5.9.2"
 	},
 	"files": [
 		"src",
@@ -57,5 +72,8 @@
 			"proto/build",
 			"*.js"
 		]
+	},
+	"engines": {
+		"node": ">=22.0.0"
 	}
 }

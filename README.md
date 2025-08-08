@@ -6,7 +6,7 @@ Audio Player interface for Discord.js
 ### Prerequisites
 Only compiles on Linux or WSL2+.
 
-1. Install [sange](https://github.com/davidzeng0/sange) dependencies
+1. Install [sange](https://github.com/Node-Estudios/sange) dependencies
 2. libsodium
 3. protoc-gen-ts
 
@@ -20,7 +20,7 @@ yay -Sy cmake
 npm i -g protoc-gen-ts
 
 # install
-npm i github:davidzeng0/yasha#dist
+npm i @eliyya/yasha
 ```
 
 Example usage
@@ -50,7 +50,7 @@ const client = new Discord.Client({
 	]
 });
 
-const {Source, TrackPlayer, VoiceConnection} = require('yasha');
+const {Source, TrackPlayer, VoiceConnection} = require('@eliyya/yasha');
 
 client.on('ready', () => {
 	console.log('Ready!');
